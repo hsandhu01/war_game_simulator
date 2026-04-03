@@ -192,7 +192,9 @@ function WorldMap({ countries, selectedCountryId, interactionMode, onCountrySele
         {/* Chokepoint Markers */}
         <g>
           {chokepoints.map((cp, i) => {
-             const [cx, cy] = projFunc(cp.coords);
+             const coords = projection(cp.coords);
+             if (!coords) return null;
+             const [cx, cy] = coords;
              return (
                <g key={i} 
                   onMouseEnter={() => setHoveredCountry(cp.name)}
