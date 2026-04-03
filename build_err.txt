@@ -1,0 +1,38 @@
+
+> war_games_sim@0.0.0 build
+> vite build
+
+[36mvite v8.0.3 [32mbuilding client environment for production...[36m[39m
+[2Ktransforming...✓ 2005 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.46 kB │ gzip:   0.29 kB
+dist/assets/index-BAp0k2gq.css    6.01 kB │ gzip:   1.76 kB
+dist/assets/index-D5Hc-2ee.js   315.17 kB │ gzip: 102.45 kB
+
+[31m✗[39m Build failed in 574ms
+[31merror during build:
+[31mBuild failed with 1 error:
+
+Error: [vite]: Rolldown failed to resolve import "prop-types" from "C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/react-simple-maps/dist/index.umd.js".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`
+    at viteLog (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/vite/dist/node/chunks/node.js:32942:57)
+    at file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/vite/dist/node/chunks/node.js:32978:71
+    at onwarn (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/@vitejs/plugin-react/dist/index.js:40:7)
+    at file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/vite/dist/node/chunks/node.js:32978:28
+    at onRollupLog (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/vite/dist/node/chunks/node.js:32973:63)
+    at onLog (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/vite/dist/node/chunks/node.js:32743:4)
+    at file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/rolldown/dist/shared/rolldown-build-CPrIX9V6.mjs:49:26
+    at logger (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/rolldown/dist/shared/rolldown-build-CPrIX9V6.mjs:40:3)
+    at onLog (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/rolldown/dist/shared/bindingify-input-options-e7ze4hPR.mjs:1972:32)[31m
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/rolldown/dist/shared/error-BLhcSyeg.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/rolldown/dist/shared/error-BLhcSyeg.mjs:18:128)
+    at #build (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/rolldown/dist/shared/rolldown-build-CPrIX9V6.mjs:3313:34)
+    at async buildEnvironment (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/vite/dist/node/chunks/node.js:32849:64)
+    at async Object.build (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/vite/dist/node/chunks/node.js:33271:19)
+    at async Object.buildApp (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/vite/dist/node/chunks/node.js:33268:153)
+    at async CAC.<anonymous> (file:///C:/Users/hsand/.gemini/antigravity/scratch/war_games_sim/node_modules/vite/dist/node/cli.js:778:3) {
+  errors: [Getter/Setter]
+}[39m

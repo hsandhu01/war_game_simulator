@@ -1,0 +1,152 @@
+[
+  {
+    "id": "USA",
+    "name": "United States",
+    "aliases": ["United States", "United States of America", "USA"],
+    "alliance": "NATO",
+    "military_strength": 100,
+    "economic_power": 100,
+    "threat_level": 10,
+    "color": "#1f2937"
+  },
+  {
+    "id": "CHN",
+    "name": "China",
+    "aliases": ["China", "People's Republic of China", "CHN"],
+    "alliance": "BRICS",
+    "military_strength": 90,
+    "economic_power": 95,
+    "threat_level": 25,
+    "color": "#1f2937"
+  },
+  {
+    "id": "RUS",
+    "name": "Russia",
+    "aliases": ["Russia", "Russian Federation", "RUS"],
+    "alliance": "BRICS",
+    "military_strength": 88,
+    "economic_power": 70,
+    "threat_level": 40,
+    "color": "#1f2937"
+  },
+  {
+    "id": "GBR",
+    "name": "United Kingdom",
+    "aliases": ["United Kingdom", "U.K.", "Great Britain", "GBR"],
+    "alliance": "NATO",
+    "military_strength": 80,
+    "economic_power": 85,
+    "threat_level": 5,
+    "color": "#1f2937"
+  },
+  {
+    "id": "FRA",
+    "name": "France",
+    "aliases": ["France", "French Republic", "FRA"],
+    "alliance": "NATO",
+    "military_strength": 78,
+    "economic_power": 82,
+    "threat_level": 5,
+    "color": "#1f2937"
+  },
+  {
+    "id": "IRN",
+    "name": "Iran",
+    "aliases": ["Iran", "Islamic Republic of Iran", "Iran (Islamic Republic of)"],
+    "alliance": "Non-Aligned",
+    "military_strength": 60,
+    "economic_power": 55,
+    "threat_level": 60,
+    "color": "#1f2937"
+  },
+  {
+    "id": "PRK",
+    "name": "North Korea",
+    "aliases": ["North Korea", "Dem. Rep. Korea", "Democratic People's Republic of Korea"],
+    "alliance": "Non-Aligned",
+    "military_strength": 55,
+    "economic_power": 20,
+    "threat_level": 80,
+    "color": "#1f2937"
+  },
+  {
+    "id": "KOR",
+    "name": "South Korea",
+    "aliases": ["South Korea", "Republic of Korea", "Korea"],
+    "alliance": "Western-Aligned",
+    "military_strength": 75,
+    "economic_power": 80,
+    "threat_level": 20,
+    "color": "#1f2937"
+  },
+  {
+    "id": "JPN",
+    "name": "Japan",
+    "aliases": ["Japan", "JPN"],
+    "alliance": "Western-Aligned",
+    "military_strength": 82,
+    "economic_power": 90,
+    "threat_level": 15,
+    "color": "#1f2937"
+  },
+  {
+    "id": "IND",
+    "name": "India",
+    "aliases": ["India", "Republic of India", "IND"],
+    "alliance": "Non-Aligned",
+    "military_strength": 85,
+    "economic_power": 88,
+    "threat_level": 10,
+    "color": "#1f2937"
+  },
+  {
+    "id": "TWN",
+    "name": "Taiwan",
+    "aliases": ["Taiwan", "Taiwan, Province of China", "Republic of China"],
+    "alliance": "Western-Aligned",
+    "military_strength": 65,
+    "economic_power": 75,
+    "threat_level": 30,
+    "color": "#1f2937"
+  },
+  {
+    "id": "GER",
+    "name": "Germany",
+    "aliases": ["Germany", "Federal Republic of Germany"],
+    "alliance": "NATO",
+    "military_strength": 76,
+    "economic_power": 92,
+    "threat_level": 0,
+    "color": "#1f2937"
+  },
+  {
+    "id": "ISR",
+    "name": "Israel",
+    "aliases": ["Israel", "State of Israel"],
+    "alliance": "Western-Aligned",
+    "military_strength": 78,
+    "economic_power": 70,
+    "threat_level": 65,
+    "color": "#1f2937"
+  },
+  {
+    "id": "PAK",
+    "name": "Pakistan",
+    "aliases": ["Pakistan", "Islamic Republic of Pakistan"],
+    "alliance": "Non-Aligned",
+    "military_strength": 72,
+    "economic_power": 45,
+    "threat_level": 35,
+    "color": "#1f2937"
+  },
+  {
+    "id": "SAU",
+    "name": "Saudi Arabia",
+    "aliases": ["Saudi Arabia", "Kingdom of Saudi Arabia"],
+    "alliance": "Western-Aligned",
+    "military_strength": 68,
+    "economic_power": 78,
+    "threat_level": 20,
+    "color": "#1f2937"
+  }
+]

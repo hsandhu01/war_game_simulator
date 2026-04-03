@@ -1,0 +1,122 @@
+.command-panel {
+  position: absolute;
+  top: 90px;
+  right: 20px;
+  width: 320px;
+  padding: 20px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--panel-border);
+  padding-bottom: 10px;
+}
+
+.panel-header h2 {
+  margin: 0;
+  color: var(--accent-cyan);
+  font-size: 1.2rem;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 5px;
+}
+
+.close-btn:hover {
+  color: var(--accent-red);
+}
+
+.intel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(0,0,0,0.3);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.intel-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  margin: 0 10px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  transition: width 0.5s ease-out, background-color 0.5s;
+}
+
+.action-section h3, .target-section h3 {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.action-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-btn {
+  background: rgba(45, 212, 191, 0.05);
+  border: 1px solid var(--panel-border);
+  color: var(--text-main);
+  padding: 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.action-btn:hover, .action-btn.active {
+  background: rgba(45, 212, 191, 0.2);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(45, 212, 191, 0.2);
+}
+
+.action-btn.danger:hover, .action-btn.danger.active {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--accent-red);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.target-select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  color: var(--text-main);
+  outline: none;
+}
+
+.target-select option {
+  background: var(--bg-color);
+}
+
+.execute-btn {
+  width: 100%;
+  padding: 12px;
+}

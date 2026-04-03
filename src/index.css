@@ -1,0 +1,174 @@
+:root {
+  --bg-color: #0b0f19;
+  --panel-bg: rgba(16, 26, 45, 0.75);
+  --panel-border: rgba(45, 212, 191, 0.2);
+  --glass-blur: blur(12px);
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  --accent-cyan: #2dd4bf;
+  --accent-amber: #fbbf24;
+  --accent-red: #ef4444;
+
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-main);
+  background-color: var(--bg-color);
+  background-image: 
+    linear-gradient(rgba(45, 212, 191, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 212, 191, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.glass-panel {
+  background: var(--panel-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glow-panel {
+  box-shadow: 0 0 15px rgba(45, 212, 191, 0.2), inset 0 0 20px rgba(45, 212, 191, 0.05);
+}
+
+.btn {
+  background: transparent;
+  color: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan);
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+  font-size: 0.8rem;
+  box-shadow: 0 0 5px rgba(45, 212, 191, 0.2);
+}
+
+.btn:hover {
+  background: var(--accent-cyan);
+  color: #000;
+  box-shadow: 0 0 15px rgba(45, 212, 191, 0.6);
+}
+
+.btn.danger {
+  color: var(--accent-red);
+  border-color: var(--accent-red);
+  box-shadow: 0 0 5px rgba(239, 68, 68, 0.2);
+}
+.btn.danger:hover {
+  background: var(--accent-red);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+}
+
+.covert-btn {
+  color: #c084fc !important;
+  border-color: #c084fc !important;
+  box-shadow: 0 0 5px rgba(192, 132, 252, 0.2);
+}
+.covert-btn:hover {
+  background: #c084fc !important;
+  color: #000 !important;
+  box-shadow: 0 0 15px rgba(192, 132, 252, 0.6) !important;
+}
+
+h1, h2, h3, h4 {
+  margin: 0 0 1rem 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.hud-title {
+  font-size: 1.5rem;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scan-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgba(45, 212, 191, 0.4), transparent);
+  animation: scan 4s linear infinite;
+  pointer-events: none;
+  z-index: 50;
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
+}
+
+.crt-effect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.3) 100%);
+  pointer-events: none;
+  z-index: 100;
+}
+
+.crt-effect::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* Animations */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.blink {
+  animation: blink 1.5s infinite;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.badge.hostile { background-color: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+.badge.neutral { background-color: rgba(251, 191, 36, 0.2); color: var(--accent-amber); border: 1px solid var(--accent-amber); }
+.badge.friendly { background-color: rgba(45, 212, 191, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
