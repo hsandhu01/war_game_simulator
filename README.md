@@ -30,3 +30,8 @@ To run this simulation locally:
 3. Open \`http://localhost:5173/\`
 
 Built heavily using React 19, D3-Geo, and custom CSS effects representing CRT Phosphor aesthetics.
+
+---
+
+**Developed & Released By:**  
+[Sandhu Software](https://www.sandhusoftware.com/)
