@@ -4,26 +4,22 @@ import { feature } from 'topojson-client';
 import geoData from '../data/world-50m.json';
 
 function WorldMap({ countries, selectedCountryId, interactionMode, onCountrySelect }) {
-  // Use D3 natively to bypass all React 19 + react-simple-maps bugs
+  // Create a precise mercator projection
+  const projection = useMemo(() => geoMercator().scale(120).translate([490, 380]), []);
+
   const { features, pathGenerator, graticulePath, spherePath } = useMemo(() => {
     const mapFeatures = feature(geoData, geoData.objects.countries).features;
     
-    // Create a precise mercator projection
-    const projection = geoMercator()
-      .scale(120)
-      .translate([490, 380]); // Shift down and scale down to fit safely in viewBox
-      
     const pathGen = geoPath().projection(projection);
     const graticule = geoGraticule();
 
     return {
       features: mapFeatures,
       pathGenerator: pathGen,
-      projFunc: projection,
       graticulePath: pathGen(graticule()),
       spherePath: pathGen({ type: "Sphere" })
     };
-  }, []);
+  }, [projection]);
 
   const chokepoints = [
     { name: "STRAIT OF HORMUZ", coords: [56.3, 26.5] },
