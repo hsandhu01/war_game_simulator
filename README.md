@@ -1,5 +1,7 @@
 # Global Threat Simulator
 
+[![Interactive Demo](https://img.shields.io/badge/Play_Live-Demo-2dd4bf?style=for-the-badge&logoColor=white)](https://hsandhu01.github.io/war_game_simulator/)
+
 A browser-based, highly interactive React and D3 simulation engine that strictly models geographical tension, economic state, and threat levels through mathematical calculations.
 
 This project was built securely to represent a fictional geopolitical engine modeled entirely on theoretical math arrays and React state propagation.
