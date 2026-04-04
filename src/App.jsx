@@ -97,6 +97,16 @@ function App() {
               </button>
             )) : <p>Loading Geodata...</p>}
           </div>
+          
+          <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>ADVANCED EXPERIMENTAL ENGINES</span>
+            <button 
+              className={`btn ${state.chaosEnabled ? 'danger' : ''}`} 
+              onClick={() => dispatch({ type: ACTIONS.TOGGLE_CHAOS })}
+            >
+              CHAOS ENGINE: {state.chaosEnabled ? 'ONLINE' : 'OFFLINE'}
+            </button>
+          </div>
         </div>
       )}
 

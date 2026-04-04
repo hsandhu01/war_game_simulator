@@ -4,12 +4,14 @@ export const ACTIONS = {
   ADD_LIVE_NEWS: 'ADD_LIVE_NEWS',
   SET_PLAYER_NATION: 'SET_PLAYER_NATION',
   GAME_TICK: 'GAME_TICK',
-  UN_RESOLUTION: 'UN_RESOLUTION'
+  UN_RESOLUTION: 'UN_RESOLUTION',
+  TOGGLE_CHAOS: 'TOGGLE_CHAOS'
 };
 
 export const initialState = {
   playerNationId: null,
   gameOverReason: null, // "nuclear", "conquest", etc
+  chaosEnabled: false,
   selectedCountryId: null,
   interactionMode: 'IDLE', // IDLE or SELECTING_TARGET
   pendingAction: null,     // Holds the string name of the action
@@ -49,11 +51,14 @@ export function simulationReducer(state, action) {
         playerNationId: action.payload, 
         selectedCountryId: action.payload,
         logs: [
-          { id: Date.now(), text: `COMMANDER ASSIGNED TO ${action.payload}. INITIATING GLOBAL SYSTEMS.`, type: 'system', timestamp: new Date().toISOString() },
+          { id: Date.now(), text: `COMMANDER ASSIGNED TO ${action.payload}. INITIATING GLOBAL SYSTEMS. CHAOS ENGINE: ${state.chaosEnabled ? 'ONLINE' : 'OFFLINE'}.`, type: 'system', timestamp: new Date().toISOString() },
           ...state.logs
         ]
       };
       
+    case ACTIONS.TOGGLE_CHAOS:
+      return { ...state, chaosEnabled: !state.chaosEnabled };
+
     case ACTIONS.SELECT_COUNTRY:
       return { ...state, selectedCountryId: action.payload };
 
@@ -85,9 +90,6 @@ export function simulationReducer(state, action) {
       }
 
       let gameOverReason = state.gameOverReason;
-      if (actionType === "Nuclear Strike") {
-        gameOverReason = "nuclear";
-      }
 
       // Covert Math & Alliance Processing
       let actualLogText = effect.log ? effect.log(actor, target) : "";
@@ -130,6 +132,11 @@ export function simulationReducer(state, action) {
          } else {
            actualLogText = `[HEAVY CASUALTIES] ${target.name} forces repel ${actor.name}'s initial invasion wave but suffer extreme military casualties.`;
          }
+      } else if (actionType === "Nuclear Strike") {
+         targetMilitaryDamage = 99999;
+         targetAnnihilated = true;
+         actualLogText = `[NATION ANNIHILATED] ${actor.name} HAS DEPLOYED NUCLEAR WEAPONS! ${target.name} HAS BEEN OBLITERATED FROM EXISTENCE! MASSIVE GLOBAL FALLOUT DETECTED.`;
+         logType = "critical";
       }
 
       // Alliance Logic
@@ -164,11 +171,17 @@ export function simulationReducer(state, action) {
             newAlliance = actor.alliance; // Dynamic shift to allies!
           }
 
+          let newSanctionedTurns = c.sanctionedTurns || 0;
+          if (actionType === "Impose Sanctions") {
+            newSanctionedTurns += 20;
+          }
+
           return { ...c, 
             ap: Math.max(0, c.ap - targetAPDamage), 
             threat_level: newThreat, 
             threatTokens: newThreatTokens,
             alliance: newAlliance,
+            sanctionedTurns: newSanctionedTurns,
             military_strength: Math.max(0, c.military_strength - targetMilitaryDamage),
             isAnnihilated: targetAnnihilated
           };
@@ -179,6 +192,13 @@ export function simulationReducer(state, action) {
             let allyThreat = targetAnnihilated ? 40 : (actualThreat / 2);
             newThreat = Math.min(100, Math.max(0, c.threat_level + allyThreat));
             newThreatTokens[actor.id] = (newThreatTokens[actor.id] || 0) + allyThreat;
+            return { ...c, threat_level: newThreat, threatTokens: newThreatTokens };
+        }
+
+        // Global reaction to Nuclear Strikes
+        if (actionType === "Nuclear Strike" && !c.isAnnihilated && c.id !== actor.id) {
+            newThreat = 100;
+            newThreatTokens[actor.id] = 1000; // Permanently hated by the globe
             return { ...c, threat_level: newThreat, threatTokens: newThreatTokens };
         }
         
@@ -199,7 +219,25 @@ export function simulationReducer(state, action) {
       if (state.gameOverReason || !state.playerNationId) return state;
 
       let newLogs = [];
-      let isNuked = false;
+
+      // CHAOS ENGINE EVENT LOOP
+      let chaosFired = false;
+      let chaosEvent = null;
+      if (state.chaosEnabled && Math.random() > 0.97) {
+        chaosFired = true;
+        const events = ["GLOBAL_MARKET_CRASH", "WORLD_PEACE_SUMMIT", "CYBER_OUTAGE"];
+        chaosEvent = events[Math.floor(Math.random() * events.length)];
+      }
+
+      if (chaosFired) {
+        if (chaosEvent === "GLOBAL_MARKET_CRASH") {
+           newLogs.push({id: Date.now() + Math.random(), text: "[CHAOS ENGINE] THE GLOBAL ECONOMY HAS COLLAPSED. ALL NATIONS LOSE 70% OF HOARDED ACTION POINTS.", type: "critical", timestamp: new Date().toISOString()});
+        } else if (chaosEvent === "WORLD_PEACE_SUMMIT") {
+           newLogs.push({id: Date.now() + Math.random(), text: "[CHAOS ENGINE] HISTORIC PEACE SUMMIT! ALL GLOBAL TENSIONS DRASTICALLY REDUCED.", type: "system", timestamp: new Date().toISOString()});
+        } else if (chaosEvent === "CYBER_OUTAGE") {
+           newLogs.push({id: Date.now() + Math.random(), text: "[CHAOS ENGINE] UNPRECEDENTED CYBER PANDEMIC CRIPPLES MILITARY INFRASTRUCTURE WORLDWIDE.", type: "alert", timestamp: new Date().toISOString()});
+        }
+      }
 
       // 1. Give AP to everyone according to economic power
       // 2. Threat decay
@@ -209,8 +247,17 @@ export function simulationReducer(state, action) {
 
         // Only active AI logic for non-player entities
         let nextThreat = Math.max(0, c.threat_level - 1.5); // Decay
-        let nextAP = c.ap + (c.economic_power / 10);
+        let nextAP = (c.sanctionedTurns > 0) ? c.ap : c.ap + (c.economic_power / 10);
+        let nextSanctionedTurns = Math.max(0, (c.sanctionedTurns || 0) - 1);
         let updatedTokens = { ...c.threatTokens };
+        let nextMilitary = c.military_strength;
+
+        // Apply Chaos Event Modifications
+        if (chaosFired) {
+          if (chaosEvent === "GLOBAL_MARKET_CRASH") nextAP = Math.floor(nextAP * 0.3);
+          else if (chaosEvent === "WORLD_PEACE_SUMMIT") nextThreat = Math.max(0, nextThreat - 50);
+          else if (chaosEvent === "CYBER_OUTAGE") nextMilitary = Math.max(10, nextMilitary - 25);
+        }
 
         // Decay tokens slightly
         Object.keys(updatedTokens).forEach(k => {
@@ -224,7 +271,7 @@ export function simulationReducer(state, action) {
            
            if (highestHatedId && nextAP >= 150) {
               const targetCountry = state.countries.find(tc => tc.id === highestHatedId);
-              if (targetCountry) {
+              if (targetCountry && !targetCountry.isAnnihilated) {
                 // If global DEFCON is 1, AI might nuke!
                 const sortedThreats = [...state.countries].sort((a, b) => b.threat_level - a.threat_level).slice(0, 15);
                 const globalAvg = sortedThreats.reduce((sum, cc) => sum + cc.threat_level, 0) / 15;
@@ -233,7 +280,7 @@ export function simulationReducer(state, action) {
                 let actionName = "Send Naval Fleet";
                 if (c.threat_level >= 95 && nextAP >= 500) actionName = "Launch Invasion";
                 else if (c.threat_level >= 85 && nextAP >= 250) actionName = "Deploy Air Force";
-                else if (defcon === 1 && c.threat_level === 100 && nextAP >= 1000 && Math.random() > 0.85) actionName = "Nuclear Strike";
+                else if (defcon === 1 && c.threat_level >= 95 && nextAP >= 1000 && Math.random() > 0.85) actionName = "Nuclear Strike"; // AI Nukes now brutally possible if DEFCON 1
 
                 const effect = ACTION_EFFECTS[actionName];
                 nextAP -= effect.cost;
@@ -245,8 +292,6 @@ export function simulationReducer(state, action) {
                   type: actionName.includes("Invasion") || actionName === "Nuclear Strike" ? "critical" : "action",
                   timestamp: new Date().toISOString()
                 });
-
-                if (actionName === "Nuclear Strike") isNuked = true;
               }
            }
         }
@@ -254,18 +299,20 @@ export function simulationReducer(state, action) {
         return {
           ...c,
           ap: nextAP,
+          sanctionedTurns: nextSanctionedTurns,
+          military_strength: nextMilitary,
           threat_level: nextThreat,
           threatTokens: updatedTokens
         }
       });
 
       const destroyedCount = updatedCountries.filter(c => c.isAnnihilated).length;
-      const ww3End = destroyedCount > (updatedCountries.length * 0.15);
+      const ww3End = destroyedCount > (updatedCountries.length * 0.15); // End state strictly off massive death toll now
 
       return {
         ...state,
         countries: updatedCountries,
-        gameOverReason: isNuked ? "nuclear" : ww3End ? "ww3" : state.gameOverReason,
+        gameOverReason: ww3End ? "ww3" : state.gameOverReason,
         logs: [...newLogs, ...state.logs].slice(0, 100)
       };
     }
