@@ -77,3 +77,48 @@
 .defcon-3 { background-color: rgba(255, 200, 0, 0.2); color: #ffc800; border: 1px solid #ffc800; }
 .defcon-4 { background-color: rgba(0, 200, 0, 0.2); color: #00c800; border: 1px solid #00c800; }
 .defcon-5 { background-color: rgba(0, 100, 255, 0.2); color: #0064ff; border: 1px solid #0064ff; }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .top-hud {
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 0;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .hud-title {
+    font-size: 1.1rem;
+    text-align: center;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .hud-title span {
+    margin-left: 0 !important;
+    font-size: 0.85rem !important;
+  }
+
+  .hud-stats {
+    gap: 15px;
+    font-size: 0.85rem;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .game-overlay {
+    width: 95%;
+    padding: 20px;
+    top: 45%;
+  }
+
+  .game-overlay h1 {
+    font-size: 1.4rem;
+  }
+}

@@ -81,3 +81,25 @@
   border-left: 2px solid var(--accent-red);
   font-weight: bold;
 }
+
+@media (max-width: 768px) {
+  .news-ticker {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 90px;
+    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.85); /* Solidify background so map doesn't interfere with reading */
+    border-top: 1px solid var(--panel-border);
+    z-index: 400; /* Below command center but above map */
+  }
+
+  .log-item {
+    font-size: 0.75rem;
+    padding: 3px 6px;
+  }
+
+  .log-item .timestamp {
+    min-width: 70px;
+  }
+}
