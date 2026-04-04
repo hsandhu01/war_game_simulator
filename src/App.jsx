@@ -22,7 +22,7 @@ function App() {
   // Initialize data on mount
   useEffect(() => {
     const allGeo = feature(geoData, geoData.objects.countries).features;
-    const fullPayload = allGeo.map(geo => {
+    let fullPayload = allGeo.map(geo => {
        const geoName = geo.properties.name;
        const hardcoded = countryData.find(c => c.name === geoName || c.id === geoName || (c.aliases && c.aliases.includes(geoName)));
        if (hardcoded) return hardcoded; // keep custom configs for USA, China etc
@@ -37,7 +37,15 @@ function App() {
        };
     });
 
-    dispatch({ type: 'INIT_COUNTRIES', payload: fullPayload });
+    const chokepointsPayload = [
+      { id: "STRAIT OF HORMUZ", name: "STRAIT OF HORMUZ", isChokepoint: true, controllerId: null },
+      { id: "SUEZ CANAL", name: "SUEZ CANAL", isChokepoint: true, controllerId: null },
+      { id: "PANAMA CANAL", name: "PANAMA CANAL", isChokepoint: true, controllerId: null },
+      { id: "STRAIT OF MALACCA", name: "STRAIT OF MALACCA", isChokepoint: true, controllerId: null },
+      { id: "BAB EL-MANDEB STRAIT", name: "BAB EL-MANDEB STRAIT", isChokepoint: true, controllerId: null }
+    ];
+
+    dispatch({ type: 'INIT_COUNTRIES', payload: [...fullPayload, ...chokepointsPayload] });
   }, []);
 
   const handleCountrySelect = (countryId) => {

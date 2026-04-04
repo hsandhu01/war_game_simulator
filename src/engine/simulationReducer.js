@@ -30,7 +30,10 @@ const ACTION_EFFECTS = {
   "Send Aid": { threatIncrease: -15, cost: 200, log: (actor, target) => `${actor.name} sends humanitarian aid to ${target.name}, easing tensions.` },
   "Nuclear Strike": { threatIncrease: 100, cost: 1000, danger: true, log: (actor, target) => `CRITICAL WARNING: ${actor.name} HAS LAUNCHED NUCLEAR WEAPONS AT ${target.name}. MUTUALLY ASSURED DESTRUCTION IMMINENT.` },
   "Deploy Spies": { threatIncrease: 0, cost: 150, covert: true, log: () => `` },
-  "Cyber Attack": { threatIncrease: 0, cost: 300, covert: true, log: () => `` }
+  "Cyber Attack": { threatIncrease: 0, cost: 300, covert: true, log: () => `` },
+  "Build Defense Grid": { threatIncrease: 5, cost: 600, defensive: true, log: (actor) => `${actor.name} HAS ACTIVATED A NATIONAL MISSILE DEFENSE GRID.` },
+  "Seize Chokepoint": { threatIncrease: 35, cost: 350, hostile: true, log: (actor, target) => `ALERT: ${actor.name} HAS MILITARILY SEIZED THE ${target.name} CHOKEPOINT! GLOBAL SUPPLY CHAINS DISRUPTED.` },
+  "Bribe U.N.": { threatIncrease: 0, cost: 500, covert: true, log: (actor, target) => `[U.N. CORRUPTION] Unprecedented U.N. Emergency Session targets ${target.name} with sudden crippling embargoes! (Source Unknown)` }
 };
 
 export function simulationReducer(state, action) {
@@ -99,6 +102,7 @@ export function simulationReducer(state, action) {
       let targetAnnihilated = false;
       let logType = actionType === "Launch Invasion" || actionType === "Nuclear Strike" ? "critical" : "action";
 
+      // Intercept Action Logic
       if (actionType === "Deploy Spies") {
         if (Math.random() > 0.45) { // Success
           actualThreat = 2; // low undetected tension
@@ -121,8 +125,22 @@ export function simulationReducer(state, action) {
           actualLogText = `[TRACE COMPLETED] A devastating cyber attack on ${target.name} has been definitively traced to ${actor.name}!`;
           logType = "critical";
         }
+      } else if (actionType === "Build Defense Grid") {
+          actualLogText = effect.log(actor);
+          logType = "system";
+      } else if (actionType === "Bribe U.N.") {
+          actualLogText = effect.log(actor, target);
+          logType = "critical";
+      } else if (actionType === "Seize Chokepoint") {
+          actualLogText = effect.log(actor, target);
+          logType = "critical";
       } else if (actionType === "Deploy Air Force") {
-         targetMilitaryDamage = Math.floor(Math.random() * 20) + 15;
+         if (target.hasDefenseGrid && Math.random() < 0.75) {
+             actualLogText = `[INTERCEPTED] ${actor.name} launched tactical airstrikes against ${target.name}, but they were entirely neutralized by the Missile Defense Grid!`;
+             logType = "alert";
+         } else {
+             targetMilitaryDamage = Math.floor(Math.random() * 20) + 15;
+         }
       } else if (actionType === "Launch Invasion") {
          targetMilitaryDamage = Math.floor(actor.military_strength * 0.4); // Devastating hit based on actor's power
          if (target.military_strength - targetMilitaryDamage <= 0) {
@@ -133,10 +151,15 @@ export function simulationReducer(state, action) {
            actualLogText = `[HEAVY CASUALTIES] ${target.name} forces repel ${actor.name}'s initial invasion wave but suffer extreme military casualties.`;
          }
       } else if (actionType === "Nuclear Strike") {
-         targetMilitaryDamage = 99999;
-         targetAnnihilated = true;
-         actualLogText = `[NATION ANNIHILATED] ${actor.name} HAS DEPLOYED NUCLEAR WEAPONS! ${target.name} HAS BEEN OBLITERATED FROM EXISTENCE! MASSIVE GLOBAL FALLOUT DETECTED.`;
-         logType = "critical";
+         if (target.hasDefenseGrid && Math.random() < 0.75) {
+            actualLogText = `[CRITICAL INTERCEPTION] ${actor.name} FIRED NUCLEAR WARHEADS AT ${target.name}! BUT THE IRON DOME MISSILE DEFENSE SYSTEM SUCCESSFULLY INTERCEPTED THE PAYLOAD IN LOW ORBIT! MILLIONS SAVED!`;
+            logType = "system";
+         } else {
+            targetMilitaryDamage = 99999;
+            targetAnnihilated = true;
+            actualLogText = `[NATION ANNIHILATED] ${actor.name} HAS DEPLOYED NUCLEAR WEAPONS! ${target.name} HAS BEEN OBLITERATED FROM EXISTENCE! MASSIVE GLOBAL FALLOUT DETECTED.`;
+            logType = "critical";
+         }
       }
 
       // Alliance Logic
@@ -175,6 +198,21 @@ export function simulationReducer(state, action) {
           if (actionType === "Impose Sanctions") {
             newSanctionedTurns += 20;
           }
+          if (actionType === "Bribe U.N.") {
+            newSanctionedTurns += 50;
+            targetAPDamage = Math.floor(c.ap * 0.9); // Instantly wipes out 90% of their AP!
+            newThreat = 100;
+          }
+          
+          let hasDef = c.hasDefenseGrid || false;
+          if (actionType === "Build Defense Grid") {
+             hasDef = true;
+          }
+
+          let controller = c.controllerId || null;
+          if (actionType === "Seize Chokepoint") {
+             controller = actor.id;
+          }
 
           return { ...c, 
             ap: Math.max(0, c.ap - targetAPDamage), 
@@ -182,9 +220,17 @@ export function simulationReducer(state, action) {
             threatTokens: newThreatTokens,
             alliance: newAlliance,
             sanctionedTurns: newSanctionedTurns,
+            hasDefenseGrid: hasDef,
+            controllerId: controller,
             military_strength: Math.max(0, c.military_strength - targetMilitaryDamage),
             isAnnihilated: targetAnnihilated
           };
+        }
+
+        // Chokepoint Seizure enrages everyone else globally
+        if (actionType === "Seize Chokepoint" && c.id !== actor.id && !c.isChokepoint) {
+            newThreatTokens[actor.id] = (newThreatTokens[actor.id] || 0) + 30;
+            return { ...c, threat_level: Math.min(100, Math.max(0, c.threat_level + 30)), threatTokens: newThreatTokens };
         }
 
         // Allies of the target grow nervous. If dead, they get VERY nervous.
@@ -264,6 +310,16 @@ export function simulationReducer(state, action) {
            updatedTokens[k] = Math.max(0, updatedTokens[k] - 0.5);
            if (updatedTokens[k] <= 0) delete updatedTokens[k];
         });
+
+        // AP Multiplier if they control a chokepoint!
+        const controlledChokepoints = state.countries.filter(cp => cp.isChokepoint && cp.controllerId === c.id);
+        if (controlledChokepoints.length > 0 && nextAP > 0) {
+           nextAP += (c.economic_power / 10) * controlledChokepoints.length; // Double/Triple/Quadruple AP generation
+           // It makes the world incrementally hate them!
+           controlledChokepoints.forEach(() => {
+              if (c.id === state.playerNationId) nextThreat = Math.min(100, nextThreat + 2); // Build global tension against player
+           });
+        }
 
         if (c.id !== state.playerNationId && c.threat_level >= 80) {
            // Find highest hated enemy

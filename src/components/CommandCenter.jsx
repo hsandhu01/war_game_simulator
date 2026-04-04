@@ -11,6 +11,8 @@ function CommandCenter({ selectedCountry, playerCountry, globalDefcon, interacti
     { name: "Send Aid", icon: Shield, type: "diplomatic", cost: 200 },
     { name: "Deploy Spies", icon: Target, type: "covert", cost: 150 },
     { name: "Cyber Attack", icon: Zap, type: "covert", cost: 300 },
+    { name: "Bribe U.N.", icon: Target, type: "covert", cost: 500 },
+    { name: "Build Defense Grid", icon: Shield, type: "defensive", cost: 600 },
     { name: "Launch Invasion", icon: AlertTriangle, type: "hostile", danger: true, cost: 500 }
   ];
 
@@ -43,6 +45,41 @@ function CommandCenter({ selectedCountry, playerCountry, globalDefcon, interacti
           <button className="btn danger execute-btn" style={{ marginTop: '20px' }} onClick={onCancelTargeting}>
             ABORT DIRECTIVE
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (selectedCountry.isChokepoint) {
+    const isControlledByPlayer = selectedCountry.controllerId === playerCountry.id;
+    return (
+      <div className="command-panel glass-panel glow-panel" style={{ borderColor: 'var(--accent-amber)' }}>
+        <div className="panel-header">
+          <h2 style={{ color: 'var(--accent-amber)' }}>GLOBAL CHOKEPOINT</h2>
+          <button className="close-btn" onClick={onClose}><X size={20} /></button>
+        </div>
+        <div className="intel-section" style={{ textAlign: 'center', padding: '20px' }}>
+          <Zap size={40} color="var(--accent-amber)" className="blink" style={{ margin: '0 auto 15px auto', display: 'block' }} />
+          <h3>{selectedCountry.name}</h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+            Controlling this strategic territory will DOUBLE your economic AP generation, but will permanently enrage all global superpowers who rely on this shipping lane.
+          </p>
+          <div style={{ marginTop: '15px', fontWeight: 'bold' }}>
+            STATUS: <span style={{ color: selectedCountry.controllerId ? 'var(--accent-red)' : 'var(--accent-cyan)'}}>
+              {selectedCountry.controllerId ? `SEIZED BY ${selectedCountry.controllerId}` : 'INTERNATIONAL WATERS'}
+            </span>
+          </div>
+
+          {!isControlledByPlayer && (
+            <button 
+               className={`btn danger execute-btn ${playerCountry.ap < 350 ? 'disabled' : ''}`} 
+               style={{ marginTop: '20px' }} 
+               disabled={playerCountry.ap < 350}
+               onClick={() => onInitiateAction("Seize Chokepoint")}
+            >
+              SEIZE CHOKEPOINT (-350 AP)
+            </button>
+          )}
         </div>
       </div>
     );

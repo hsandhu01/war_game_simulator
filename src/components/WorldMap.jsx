@@ -153,34 +153,43 @@ function WorldMap({ countries, selectedCountryId, interactionMode, onCountrySele
         <g strokeLinejoin="round" strokeLinecap="round">
           {features.map((geo, i) => {
             const geoName = geo.properties.name;
-            const hasData = countries.some(c => c.name === geoName || c.id === geoName || (c.aliases && c.aliases.includes(geoName)));
+            const countryData = countries.find(c => c.name === geoName || c.id === geoName || (c.aliases && c.aliases.includes(geoName)));
+            const hasData = !!countryData;
             const styleProps = getCountryStyle(geo);
             
             return (
-              <path
-                key={geo.id || i}
-                d={pathGenerator(geo)}
-                fill={styleProps.fill}
-                stroke={styleProps.stroke}
-                strokeWidth={styleProps.strokeWidth}
-                filter={styleProps.filter}
-                style={{ 
-                  cursor: styleProps.cursor, 
-                  animation: styleProps.animation,
-                  transition: styleProps.transition,
-                  outline: "none"
-                }}
-                onMouseEnter={() => setHoveredCountry(geoName)}
-                onMouseLeave={() => setHoveredCountry(null)}
-                onClick={() => {
-                  let selectedId = geoName;
-                  if (hasData) {
-                    const countryData = countries.find(c => c.name === geoName || c.id === geoName || (c.aliases && c.aliases.includes(geoName)));
-                    selectedId = countryData.id;
-                  }
-                  onCountrySelect(selectedId);
-                }}
-              />
+              <React.Fragment key={geo.id || i}>
+                <path
+                  d={pathGenerator(geo)}
+                  fill={styleProps.fill}
+                  stroke={styleProps.stroke}
+                  strokeWidth={styleProps.strokeWidth}
+                  filter={styleProps.filter}
+                  style={{ 
+                    cursor: styleProps.cursor, 
+                    animation: styleProps.animation,
+                    transition: styleProps.transition,
+                    outline: "none"
+                  }}
+                  onMouseEnter={() => setHoveredCountry(geoName)}
+                  onMouseLeave={() => setHoveredCountry(null)}
+                  onClick={() => {
+                    let selectedId = geoName;
+                    if (hasData) selectedId = countryData.id;
+                    onCountrySelect(selectedId);
+                  }}
+                />
+                {countryData && countryData.hasDefenseGrid && !countryData.isAnnihilated && (
+                    <path
+                      d={pathGenerator(geo)}
+                      fill="rgba(59, 130, 246, 0.1)"
+                      stroke="#60a5fa"
+                      strokeWidth={1.5}
+                      filter="url(#glow)"
+                      style={{ pointerEvents: 'none' }}
+                    />
+                )}
+              </React.Fragment>
             );
           })}
         </g>
@@ -195,6 +204,10 @@ function WorldMap({ countries, selectedCountryId, interactionMode, onCountrySele
                <g key={i} 
                   onMouseEnter={() => setHoveredCountry(cp.name)}
                   onMouseLeave={() => setHoveredCountry(null)}
+                  onClick={(e) => {
+                     e.stopPropagation();
+                     onCountrySelect(cp.name);
+                  }}
                   style={{ cursor: 'crosshair', outline: 'none' }}
                >
                  {/* Inner static marker */}
